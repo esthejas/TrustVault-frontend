@@ -47,7 +47,6 @@
     padding: 2em;
     letter-spacing: 0.085em;
     font-size: 1.35em;
-
 }
 
 .ok {
@@ -82,8 +81,8 @@ label{
     border-bottom: 2px solid #111010;
     font-size: 1.25em;
 }
-h2{
-    padding: 0.5em 3em;
+.ls_title{
+    text-align: center;
     font-size: 2em;
     color: #202224;
 }
@@ -127,4 +126,7 @@ h2{
     margin: 1em 4em;
     color: #045DE9;
     text-align: center;
+}
+.error{
+    color: red;
 }
