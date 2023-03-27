@@ -7,7 +7,7 @@
 }
 
 .navcontainer {
-    min-height: 10vh;
+    height: 12vh;
     width: 100%;
     background: linear-gradient(300deg, #b86cef,#045DE9);
     display: flex;
