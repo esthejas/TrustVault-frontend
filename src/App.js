@@ -4,6 +4,7 @@ import Home from './pages/home/home';
 import { BrowserRouter as Router ,Route,Routes } from 'react-router-dom';
 import Createvault from './pages/createvault/createvault';
 import Viewvault from './pages/viewvault/viewvault';
+import Updatevault from './pages/updatevault/updatevault';
 // import './App.css';
 
 function App() {
@@ -13,9 +14,11 @@ function App() {
       <Router>
         <Routes>
           <Route path="/" element ={ <Signup />}/>
-          <Route path='/home' element ={<Home/>}/>
+          <Route path='/home' element ={<Home />}/>
           <Route path='/createvault' element={<Createvault/>}/>
-          <Route path='/viewvault/:id' element={<Viewvault/>}/>
+          <Route path='/viewvault' element={<Viewvault/>}/>
+          <Route path='/updatevault' element={<Updatevault/>}/>
+          
         </Routes>
       </Router>
     
