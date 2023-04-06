@@ -86,13 +86,12 @@ export default function Home() {
     const index = vaults.findIndex((vaults) => vaults.v_id === id);
 
     handleDialog( true, vaults[index].v_name,vId);
-  
 
   };
 
   const areUSure = (choose) => {
     if (choose) {
-        alert("req sent");
+        // alert("req sent");
       handleDialog(false);
     } else {
       handleDialog( false);

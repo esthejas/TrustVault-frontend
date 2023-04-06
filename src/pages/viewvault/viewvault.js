@@ -1,18 +1,33 @@
 import Navbar from "../../components/navbar";
 import "./viewvault.css";
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import React from "react";
 import { useEffect } from "react";
+import {Dialogkey1} from "../../components/secretkey";
 
 
 
 export default function Viewvault() {
   
-  const [isError, setError] = useState(null);
   const [vievaults, Setvievaults] = useState({data:null,description:null,nominee:[{v_id: null,n_email:null,n_name:null,n_ph_no:null}],v_id:null,v_name:null});
-  const [daata,Setdaata]=useState({});
+
+  const [dialogkey1, setdialogkey1] = useState({
+    isLoading: false,
+    vaultname:"",
+    vId:""
+  });
+
+  const handleDialog = (isLoading,vaultname,vId) => {
+    setdialogkey1({
+      isLoading,
+      vaultname,
+      vId
+    });
+  };
+
+  
 
   const location = useLocation();
 
@@ -20,16 +35,32 @@ export default function Viewvault() {
     Setvievaults(location.state);
   },[]) 
 
-  const { id } = useParams();
-  
-const nom = vievaults.nominee;
+  const search = useLocation().search;
+  const vId = new URLSearchParams(search).get("vid");
+  const nom = vievaults.nominee;
+
+  const opendialog1 = (v_name) => {
+
+    handleDialog( true, v_name,vId);
+
+  };
+
+  const areUSure = (choose) => {
+    if (choose) {
+        // alert("req sent");
+      handleDialog(false);
+    } else {
+      handleDialog( false);
+    }
+  };
+
   return (
     <div>
       <Navbar />
       <div className="vi_container">
-        <Link to={`/updatevault?v_id=${id}`}>
-          <button className="vi_button">Edit Vault</button>
-        </Link>
+        {/* <Link to={`/updatevault?v_id=${vId}`}> */}
+          <button className="vi_button" onClick={()=>opendialog1(vievaults.v_name)}>Edit Vault</button>
+        {/* </Link> */}
         <div className="">
           <h1 className="vi_title"> {vievaults.v_name} </h1>
         </div>
@@ -75,6 +106,10 @@ const nom = vievaults.nominee;
           </div>
         </div>
       </div>
+      {dialogkey1.isLoading && <Dialogkey1 
+                 onDialog={areUSure}
+                 vaultname={dialogkey1.vaultname}
+                 vId={dialogkey1.vId} />}
     </div>
   );
 }
