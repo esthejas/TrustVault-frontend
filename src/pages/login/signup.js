@@ -14,6 +14,11 @@ import axios from "../../axios";
 
 
 export default function Signup() {
+    const navigate = useNavigate();
+    const token1 = sessionStorage.getItem("token")
+    if(token1){
+        navigate("/home");
+    }
 
     const [isError, setError] = useState(null);
     const [isActive, setIsActive] = useState(false);
@@ -27,7 +32,6 @@ export default function Signup() {
         srepassword: "",
     });
 
-    const navigate = useNavigate();
   
 
     const handleChange = (e) => {
@@ -75,7 +79,7 @@ export default function Signup() {
                 const token = response.data.token;
 
                 if (token) {
-                    localStorage.setItem('token', token);
+                    sessionStorage.setItem('token', token);
                     console.log(token);
                     navigate("/home");
                 } else {
@@ -123,7 +127,7 @@ export default function Signup() {
                 const token = response.data.token;
 
                 if (token) {
-                    localStorage.setItem('token', token);
+                    sessionStorage.setItem('token', token);
                     console.log(token);
                     navigate("/home");
                 } else {

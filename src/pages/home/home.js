@@ -7,9 +7,8 @@ import Nominee from "../../pics/nomineeicon.png";
 import { Link } from "react-router-dom";
 import axios from "../../axios";
 import { useEffect, useState } from "react";
-import {Dialogkey} from "../../components/secretkey";
-
-const token = localStorage.getItem("token");
+import { Dialogkey } from "../../components/secretkey";
+import { Deletepop } from "../deletevault/deletevault";
 
 // const vaults = [
 //     {
@@ -40,23 +39,30 @@ const token = localStorage.getItem("token");
 // ];
 
 export default function Home() {
+  const token = sessionStorage.getItem("token");
   const [isError, setError] = useState(null);
   const [vaults, setvaults] = useState([]);
   const [dialogkey, setdialogkey] = useState({
     isLoading: false,
-    vaultname:"",
-    vId:""
+    vaultname: "",
+    vId: "",
+  });
+  const [deletekey, setdeletekey] = useState({
+    isLoading: false,
+    vaultname: "",
+    vId: "",
   });
 
   const getallvaults = async (e) => {
     try {
-      const res = await axios.get("/vault/getAllVaults");
-      setvaults(res.data.filterData);
-      console.log(vaults);
-      //  console.log(res);
-
       if (token) {
-        console.log(token);
+        const res = await axios.get("/vault/getAllVaults", {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: token,
+          },
+        });
+        setvaults(res.data.filterData);
       } else {
         alert("Try Again");
       }
@@ -71,30 +77,49 @@ export default function Home() {
     getallvaults();
   }, []);
 
-
-  const handleDialog = (isLoading,vaultname,vId) => {
+  const handleDialog = (isLoading, vaultname, vId) => {
     setdialogkey({
       isLoading,
       vaultname,
-      vId
+      vId,
+    });
+  };
+  const handleDeletepop = (isLoading, vaultname, vId) => {
+    setdeletekey({
+      isLoading,
+      vaultname,
+      vId,
     });
   };
 
   const opendialog = (id) => {
-
-    const vId=id;
+    const vId = id;
     const index = vaults.findIndex((vaults) => vaults.v_id === id);
 
-    handleDialog( true, vaults[index].v_name,vId);
+    handleDialog(true, vaults[index].v_name, vId);
+  };
+  const opendeletepop = (id) => {
+    const vId = id;
+    const index = vaults.findIndex((vaults) => vaults.v_id === id);
 
+    handleDeletepop(true, vaults[index].v_name, vId);
   };
 
   const areUSure = (choose) => {
     if (choose) {
-        // alert("req sent");
+      // alert("req sent");
       handleDialog(false);
     } else {
-      handleDialog( false);
+      handleDialog(false);
+    }
+  };
+
+  const areUSure1 = (choose) => {
+    if (choose) {
+      // alert("req sent");
+      handleDeletepop(false);
+    } else {
+      handleDeletepop(false);
     }
   };
 
@@ -107,7 +132,12 @@ export default function Home() {
             <div className="vault 1">
               <div className="invault">
                 <div className="vaultdetails">
-                    <img src={Vaulticon} onClick={()=>opendialog(vault.v_id)} className="homeicon" alt="" />
+                  <img
+                    src={Vaulticon}
+                    onClick={() => opendialog(vault.v_id)}
+                    className="homeicon"
+                    alt=""
+                  />
                   <p className="vaultname" key={vault.v_name}>
                     {vault.v_name}
                   </p>
@@ -124,7 +154,12 @@ export default function Home() {
                     </div>
                   </div>
                   <div className="trash">
-                    <img src={Delete} className="trashicon" alt="" />
+                    <img
+                      src={Delete}
+                      onClick={() => opendeletepop(vault.v_id)}
+                      className="trashicon"
+                      alt=""
+                    />
                   </div>
                 </div>
               </div>
@@ -137,10 +172,20 @@ export default function Home() {
           </Link>
         </div>
       </div>
-      {dialogkey.isLoading && <Dialogkey 
-                 onDialog={areUSure}
-                 vaultname={dialogkey.vaultname}
-                 vId={dialogkey.vId} />}
+      {dialogkey.isLoading && (
+        <Dialogkey
+          onDialog={areUSure}
+          vaultname={dialogkey.vaultname}
+          vId={dialogkey.vId}
+        />
+      )}
+      {deletekey.isLoading && (
+        <Deletepop
+          onDialog={areUSure1}
+          vaultname={deletekey.vaultname}
+          vId={deletekey.vId}
+        />
+      )}
     </div>
   );
 }

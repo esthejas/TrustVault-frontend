@@ -1,66 +1,61 @@
 import Navbar from "../../components/navbar";
 import "./viewvault.css";
-import { useLocation } from "react-router-dom";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useState } from "react";
 import React from "react";
 import { useEffect } from "react";
-import {Dialogkey1} from "../../components/secretkey";
+import { useContext } from "react";
+import Secrertdata from "../../components/context";
+import axios from "../../axios";
 
-
+const token = sessionStorage.getItem("token");
 
 export default function Viewvault() {
-  
-  const [vievaults, Setvievaults] = useState({data:null,description:null,nominee:[{v_id: null,n_email:null,n_name:null,n_ph_no:null}],v_id:null,v_name:null});
+  const { secr } = useContext(Secrertdata);
 
-  const [dialogkey1, setdialogkey1] = useState({
-    isLoading: false,
-    vaultname:"",
-    vId:""
+  const [vievaults, Setvievaults] = useState({
+    data: null,
+    description: null,
+    nominee: [{ v_id: null, n_email: null, n_name: null, n_ph_no: null }],
+    v_id: null,
+    v_name: null,
   });
 
-  const handleDialog = (isLoading,vaultname,vId) => {
-    setdialogkey1({
-      isLoading,
-      vaultname,
-      vId
-    });
+  const displayvaults = async (e) => {
+    try {
+      if (token) {
+        const res = await axios.post(`/vault/displayVault`, secr, {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: token,
+          },
+        });
+        Setvievaults(res.data);
+      } else {
+        alert("Try Again");
+      }
+    } catch (e) {
+      const err = JSON.stringify(e.response.data.error);
+      console.log(err);
+      alert(err);
+    }
   };
 
-  
-
-  const location = useLocation();
-
-  useEffect(()=>{
-    Setvievaults(location.state);
-  },[]) 
+  useEffect(() => {
+    displayvaults();
+  }, []);
 
   const search = useLocation().search;
   const vId = new URLSearchParams(search).get("vid");
   const nom = vievaults.nominee;
 
-  const opendialog1 = (v_name) => {
-
-    handleDialog( true, v_name,vId);
-
-  };
-
-  const areUSure = (choose) => {
-    if (choose) {
-        // alert("req sent");
-      handleDialog(false);
-    } else {
-      handleDialog( false);
-    }
-  };
-
   return (
     <div>
       <Navbar />
       <div className="vi_container">
-        {/* <Link to={`/updatevault?v_id=${vId}`}> */}
-          <button className="vi_button" onClick={()=>opendialog1(vievaults.v_name)}>Edit Vault</button>
-        {/* </Link> */}
+        <Link to={`/updatevault?v_id=${vId}`}>
+          <button className="vi_button">Edit Vault</button>
+        </Link>
         <div className="">
           <h1 className="vi_title"> {vievaults.v_name} </h1>
         </div>
@@ -76,26 +71,25 @@ export default function Viewvault() {
           <div className="">
             <h2 className="vi_n_sub_title">Nominee Details </h2>
           </div>
-          {nom.map((nom_detail,index) => (
-            
-          <div  key={index} className="vi_n_details"> 
-            <div className="vi_n_detail">
-              <h3 className="vi_n_heading">{index+1}.</h3>
+          {nom.map((nom_detail, index) => (
+            <div key={index} className="vi_n_details">
+              <div className="vi_n_detail">
+                <h3 className="vi_n_heading">{index + 1}.</h3>
+              </div>
+              <div className="vi_n_detail">
+                <h3 className="vi_n_heading">Name : </h3>
+                <span>{nom_detail.n_name}</span>
+              </div>
+              <div className="vi_n_detail">
+                <h3 className="vi_n_heading">Email : </h3>
+                <span>{nom_detail.n_email}</span>
+              </div>
+              <div className="vi_n_detail">
+                <h3 className="vi_n_heading">Mobile No. : </h3>
+                <span>{nom_detail.n_ph_no}</span>
+              </div>
             </div>
-            <div className="vi_n_detail">
-              <h3 className="vi_n_heading">Name : </h3>
-              <span>{nom_detail.n_name}</span>
-            </div>
-            <div className="vi_n_detail">
-              <h3 className="vi_n_heading">Email : </h3>
-              <span>{nom_detail.n_email}</span>
-            </div>
-            <div className="vi_n_detail">
-              <h3 className="vi_n_heading">Mobile No. : </h3>
-              <span>{nom_detail.n_ph_no}</span>
-            </div>
-          </div> 
-           ))} 
+          ))}
         </div>
         <div className="vi_data_container">
           <div className="">
@@ -106,10 +100,6 @@ export default function Viewvault() {
           </div>
         </div>
       </div>
-      {dialogkey1.isLoading && <Dialogkey1 
-                 onDialog={areUSure}
-                 vaultname={dialogkey1.vaultname}
-                 vId={dialogkey1.vId} />}
     </div>
   );
 }

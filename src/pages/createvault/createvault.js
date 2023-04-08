@@ -6,7 +6,7 @@ import d_icon from "../../pics/trash.png";
 import axios from "../../axios";
 import { useNavigate } from "react-router-dom";
 
-const token = localStorage.getItem("token");
+const token = sessionStorage.getItem("token");
 
 export default function Createvault() {
   const navigate = useNavigate();
@@ -119,10 +119,12 @@ export default function Createvault() {
 
     if (createvaultvalidateForm()) {
     try {
-      // await axios.post("/vault/addVault", vaultdetails);
 
       if (token) {
-        await axios.post("/vault/addVault", vaultdetails);
+        await axios.post("/vault/addVault", vaultdetails,{headers: {
+          "Content-Type": "application/json",
+          "Authorization": token
+      },});
         console.log(token);
         navigate("/home");
       } else {

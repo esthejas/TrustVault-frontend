@@ -1,16 +1,14 @@
 import Signup from '../src/pages/login/signup'
-// import Navbar from './components/navbar';
 import Home from './pages/home/home';
 import { BrowserRouter as Router ,Route,Routes } from 'react-router-dom';
 import Createvault from './pages/createvault/createvault';
 import Viewvault from './pages/viewvault/viewvault';
 import Updatevault from './pages/updatevault/updatevault';
-// import './App.css';
+import { Keyprovider } from './components/context';
 
 function App() {
   return (
-    // <Signup/>
-    
+    <Keyprovider>
       <Router>
         <Routes>
           <Route path="/" element ={ <Signup />}/>
@@ -21,6 +19,7 @@ function App() {
           
         </Routes>
       </Router>
+      </Keyprovider>
     
   );
 }
